@@ -1,17 +1,17 @@
-External repositories
-=====================
+Project details
+===============
 
+This debian/ folder has been written starting from the files contained in the
+Debian packager scripts.
+
+Related sources:
 * Upstream: https://gitlab.freedesktop.org/libnice/libnice/
 * Debian package: https://salsa.debian.org/telepathy-team/libnice
 
 
 
-Notes about Kurento package
-===========================
-
-This section includes notes about the package configuration files for Kurento,
-and points where this configuration deviates from the original one from the
-Debian package.
+Kurento changes from original package
+=====================================
 
 * Meson: libnice 0.1.18 dropped Autotools, so there is a big difference in build
   scripts between 0.1.17 and 0.1.18. Now there is no configure script to call;
@@ -21,19 +21,19 @@ Debian package.
 
   - Meson >= 0.52 is required, but Ubuntu 18.04 has 0.45. This means a newer
   version must be installed to build libnice; this is done with the Python
-  installer. Package "python3-pip" in "control".
+  installer: package "python3-pip" in `debian/control`.
 
-  - Ninja >= 1.7 is required by meson. Package "ninja-build" in "control".
+  - Ninja >= 1.7 is required by meson: package "ninja-build" in `debian/control`.
 
-* override_dh_auto_configure:
+* "override_dh_auto_configure" in `debian/rules`:
 
   - Runs the Python installer to dynamically install a valid version of Meson.
     Note that network access is frowned upon by the Debian policies, but right
     now we don't have much better ways to have a recent enough Meson.
 
-    UPGRADE: This won't be needed with Meson 0.53 on Ubuntu 20.04 (Focal).
+    FIXME: This won't be needed with Meson 0.53 on Ubuntu 20.04 (Focal).
 
-  - "G_DISABLE_ASSERT": Disable GLib assertions based on `g_assert()`:
+  - Add "G_DISABLE_ASSERT" to disable GLib assertions based on `g_assert()`:
     https://developer.gnome.org/glib/stable/glib-Testing.html
 
     Aborting whenever an assert doesn't pass in the libnice code has been a
@@ -44,9 +44,6 @@ Debian package.
     thousands of connections going on, and we cannot afford throwing down the
     whole server just because libnice happens to go into a bad state on one of
     those connections.
-
-  - "gstreamer_1_5": Needed to generate GStreamer packages that can be used with
-    the Kurento fork of GStreamer.
 
   - "ignored-network-interface-prefix": This flag was used in the past to ignore
     the Docker network interface (docker0) during ICE candidate gathering. It is
